@@ -12,4 +12,7 @@ public interface UserService {
     void update(User user);
     void delete(Long id);
     Optional<User> findByUsername(String username);
+    void updateUserDetails(Long id, String firstName, String lastName, int age);
+    void updateUserPassword(Long id, String newPassword);
+
 }

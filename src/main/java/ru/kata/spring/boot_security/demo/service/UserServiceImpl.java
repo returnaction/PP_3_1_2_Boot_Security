@@ -2,7 +2,6 @@ package ru.kata.spring.boot_security.demo.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,14 +9,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import static com.fasterxml.jackson.databind.type.LogicalType.Collection;
 
 @Service
 @Transactional
@@ -60,6 +56,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public void updateUserDetails(Long id, String firstName, String lastName, int age) {
+        User user = getById(id);
+        if (user != null) {
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            user.setAge(age);
+            userRepository.save(user); // Метод save выполнит обновление
+        }
+    }
+
+    @Override
     public List<User> getAll() {
         return userRepository.findAll();
     }
@@ -84,7 +91,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
 
-
+    @Override
+    public void updateUserPassword(Long id, String newPassword) {
+        User user = getById(id);
+        if (user != null) {
+            user.setPassword(passwordEncoder.encode(newPassword)); // Шифруем новый пароль
+            userRepository.save(user);
+        }
+    }
 
 
 }

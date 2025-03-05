@@ -1,14 +1,88 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Spring Security Example</title>
+    <meta charset="UTF-8">
+    <title>Пользователи</title>
+    <script>
+        function openEditPopup(id, firstName, lastName, age) {
+            document.getElementById("editUserId").value = id;
+            document.getElementById("editFirstName").value = firstName;
+            document.getElementById("editLastName").value = lastName;
+            document.getElementById("editAge").value = age;
+            document.getElementById("editPopup").style.display = "block";
+        }
+
+        function closeEditPopup() {
+            document.getElementById("editPopup").style.display = "none";
+        }
+    </script>
+    <style>
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .popup button {
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
 <form th:action="@{/logout}" method="post">
     <button type="submit">Выйти</button>
 </form>
-<h1>User, welcome spring boot security page!</h1>
+<h1>Список пользователей</h1>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Имя</th>
+        <th>Фамилия</th>
+        <th>Возраст</th>
+        <th>Действия</th>
+    </tr>
+    <tr th:each="user : ${user}">
+        <td th:text="${user.getId()}"></td>
+        <td th:text="${user.getFirstName()}"></td>
+        <td th:text="${user.getLastName()}"></td>
+        <td th:text="${user.getAge()}"></td>
+        <td>
+            <form th:action="@{/admin/delete}" method="post">
+                <input type="hidden" name="id" th:value="${user.getId()}">
+                <button type="submit">Удалить</button>
+            </form>
+            <button th:attr="onclick='openEditPopup('' + ${user.getId()} + '', '' + ${user.getFirstName()} + '', '' + ${user.getLastName()} + '', '' + ${user.getAge()} + '')'">Изменить</button>
+        </td>
+    </tr>
+</table>
 
+<h2>Добавить нового пользователя</h2>
+<form th:action="@{/admin/add}" method="post">
+    <input type="text" name="firstName" placeholder="Имя" required>
+    <input type="text" name="lastName" placeholder="Фамилия" required>
+    <input type="number" name="age" placeholder="Возраст" required>
+    <input type="text" name="username" placeholder="Имя пользователя" required>
+    <input type="text" name="password" placeholder="Пароль" required>
+    <button type="submit">Добавить</button>
+</form>
+
+<!-- Модальное окно для редактирования пользователя -->
+<div id="editPopup" class="popup">
+    <h2>Редактировать пользователя</h2>
+    <form th:action="@{/admin/update}" method="post">
+        <input type="hidden" id="editUserId" name="id">
+        <label>Имя: <input type="text" id="editFirstName" name="firstName" required></label><br>
+        <label>Фамилия: <input type="text" id="editLastName" name="lastName" required></label><br>
+        <label>Возраст: <input type="number" id="editAge" name="age" required></label><br>
+        <button type="submit">Сохранить</button>
+        <button type="button" onclick="closeEditPopup()">Отмена</button>
+    </form>
+</div>
 
 </body>
 </html>
