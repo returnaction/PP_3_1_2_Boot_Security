@@ -2,7 +2,7 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Пользователи</title>
+    <title>Пользователь</title>
     <script>
         function openEditPopup(id, firstName, lastName, age) {
             document.getElementById("editUserId").value = id;
@@ -37,44 +37,26 @@
 <form th:action="@{/logout}" method="post">
     <button type="submit">Выйти</button>
 </form>
-<h1>Список пользователей</h1>
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Имя</th>
-        <th>Фамилия</th>
-        <th>Возраст</th>
-        <th>Действия</th>
-    </tr>
-    <tr th:each="user : ${user}">
-        <td th:text="${user.getId()}"></td>
-        <td th:text="${user.getFirstName()}"></td>
-        <td th:text="${user.getLastName()}"></td>
-        <td th:text="${user.getAge()}"></td>
-        <td>
-            <form th:action="@{/admin/delete}" method="post">
-                <input type="hidden" name="id" th:value="${user.getId()}">
-                <button type="submit">Удалить</button>
-            </form>
-            <button th:attr="onclick='openEditPopup('' + ${user.getId()} + '', '' + ${user.getFirstName()} + '', '' + ${user.getLastName()} + '', '' + ${user.getAge()} + '')'">Изменить</button>
-        </td>
-    </tr>
-</table>
-
-<h2>Добавить нового пользователя</h2>
-<form th:action="@{/admin/add}" method="post">
-    <input type="text" name="firstName" placeholder="Имя" required>
-    <input type="text" name="lastName" placeholder="Фамилия" required>
-    <input type="number" name="age" placeholder="Возраст" required>
-    <input type="text" name="username" placeholder="Имя пользователя" required>
-    <input type="text" name="password" placeholder="Пароль" required>
-    <button type="submit">Добавить</button>
-</form>
+<h1>Профиль пользователя</h1>
+<div>
+    <p>ID: <span th:text="${user.getId()}"></span></p>
+    <p>Имя: <span th:text="${user.getFirstName()}"></span></p>
+    <p>Фамилия: <span th:text="${user.getLastName()}"></span></p>
+    <p>Возраст: <span th:text="${user.getAge()}"></span></p>
+    <button
+            onclick="openEditPopup(
+        '${user.id}',
+        '${user.firstName}',
+        '${user.lastName}',
+        '${user.age}'
+    )">
+        Редактировать
+    </button></div>
 
 <!-- Модальное окно для редактирования пользователя -->
 <div id="editPopup" class="popup">
-    <h2>Редактировать пользователя</h2>
-    <form th:action="@{/admin/update}" method="post">
+    <h2>Редактировать профиль</h2>
+    <form th:action="@{/user/update}" method="post">
         <input type="hidden" id="editUserId" name="id">
         <label>Имя: <input type="text" id="editFirstName" name="firstName" required></label><br>
         <label>Фамилия: <input type="text" id="editLastName" name="lastName" required></label><br>
